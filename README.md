@@ -21,6 +21,7 @@ Where:
 - OUTPUT_DIR - path to the output directory for the resulting project (must exist)
 
 For CMD:
+
 :: Set environment variables (safe with spaces)
 set "ENGINE_DISTRIBUTION_BIN=...\..\UE_MAJORVERSION.MINORVERSION\Engine\Binaries\Win64"
 set "PROJECT_DIR=E...\..\UE4GameProjectGenerator"
