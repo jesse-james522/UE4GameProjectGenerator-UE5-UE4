@@ -3,6 +3,13 @@
 #include "ProjectDescriptor.h"
 #include "Misc/OutputDeviceFile.h"
 #include "UObject/MetaData.h"
+#include "Runtime/Launch/Resources/Version.h"
+
+#if ENGINE_MAJOR_VERSION == 5
+	#define MY_CLASS_API CLASS_MinimalAPI
+#else
+	#define MY_CLASS_API CLASS_NoExport
+#endif
 
 DEFINE_LOG_CATEGORY(LogProjectGeneratorCommandlet);
 
@@ -374,7 +381,9 @@ int32 UProjectGeneratorCommandlet::MainInternal(FCommandletRunParams& Params) {
 
 		//Strip out whitelisted platforms that we do not know about, Stadia in particular
 		//TODO seems to be engine patch to support stadia target? Is it a backport from UE4.26?
-		PluginReference.WhitelistPlatforms.Remove(TEXT("Stadia"));
+		#if ENGINE_MAJOR_VERSION == 4
+            PluginReference.WhitelistPlatforms.Remove(TEXT("Stadia"));
+        #endif
 		
 		//Keep engine plugins references
 		return !EnginePlugins.Contains(PluginName) &&
@@ -574,7 +583,7 @@ bool UProjectGeneratorCommandlet::GetSpecialObjectIncludePath(UObject* Object, F
 
 	//Check if the object is class has NoExport flag, and then include the NoExportTypes.h
 	if (const UClass* Class = Cast<UClass>(Object)) {
-		if (Class->HasAnyClassFlags(CLASS_NoExport)) {
+		if (Class->HasAnyClassFlags(MY_CLASS_API)) {
 			OutIncludePath = TEXT("UObject/NoExportTypes.h");
 			return true;
 		}
